@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
@@ -15,13 +14,13 @@ public class ThirdPersonCamera : MonoBehaviour
     [SerializeField] [Tooltip("Modifies the camera zoom speed")]
     private float _zoomSpeed = 3f;
 
-    [SerializeField] [Tooltip("The distance between the camera and the target")]
+    [SerializeField] [Tooltip("The distance between the camera and the pivot")]
     private float _defaultDistanceFromPivot = 2f;
 
-    [SerializeField] [Tooltip("The minimum distance between the camera and the target")]
+    [SerializeField] [Tooltip("The minimum distance between the camera and the pivot")]
     private float _minDistanceFromPivot = 1f;
 
-    [SerializeField] [Tooltip("The maximum distance between the camera and the target")]
+    [SerializeField] [Tooltip("The maximum distance between the camera and the pivot")]
     private float _maxDistanceFromPivot = 10f;
 
     [SerializeField] [Range(-89f, 89f)] [Tooltip("Starting angle of camera in degrees")]
@@ -46,6 +45,7 @@ public class ThirdPersonCamera : MonoBehaviour
         InitializeReferences();
         _distanceFromTarget = _defaultDistanceFromPivot;
         _verticalAngle = _defaultAngle;
+        _horizontalAngle = Vector3.SignedAngle(Vector3.forward, _pivot.forward, Vector3.up);
         UpdateCameraPosition();
 
         Cursor.visible = false;
@@ -73,14 +73,15 @@ public class ThirdPersonCamera : MonoBehaviour
         _distanceFromTarget -= Input.GetAxis("Mouse ScrollWheel") * _zoomSpeed;
         _distanceFromTarget = Mathf.Clamp(_distanceFromTarget, _minDistanceFromPivot, _maxDistanceFromPivot);
 
-        Vector3 cameraDirection = rotation * _pivot.forward * -_distanceFromTarget;
+        Vector3 cameraDirection = rotation * -Vector3.forward * _distanceFromTarget;
         if (Physics.Raycast(_pivot.position, cameraDirection, out RaycastHit hitInfo, cameraDirection.magnitude + _cameraDistanceFromColliders))
         {
             cameraDirection *= Mathf.Clamp(hitInfo.distance - _cameraDistanceFromColliders, 0, Mathf.Infinity) / cameraDirection.magnitude;
         }
-
-        _camera.transform.position = _pivot.position + cameraDirection;
-        _camera.transform.LookAt(_pivot);
+        
+        Transform cameraTransform = _camera.transform;
+        cameraTransform.position = _pivot.position + cameraDirection;
+        cameraTransform.forward = -cameraDirection;
     }
 
     private void InitializeReferences()
@@ -92,7 +93,9 @@ public class ThirdPersonCamera : MonoBehaviour
 
         if (_camera == null)
         {
-            _camera = Camera.main == null ? new GameObject("Camera").AddComponent<Camera>() : Camera.main;
+            _camera = Camera.main == null 
+                ? new GameObject("Camera").AddComponent<Camera>() 
+                : Camera.main;
         }
     }
 

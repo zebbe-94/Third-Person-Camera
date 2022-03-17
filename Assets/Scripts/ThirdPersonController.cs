@@ -1,11 +1,10 @@
 using UnityEngine;
 
-// This controller is only the bare minimum to show of the camera
+// This controller is very minimalistic, primarily to show of the camera
 public class ThirdPersonController : MonoBehaviour
 {
     [SerializeField] private float _speed = 10f;
     [SerializeField] private Rigidbody _rigidbody;
-    [SerializeField] private Transform _body;
     [SerializeField] private ThirdPersonCamera _thirdPersonCamera;
     private Transform _cameraTransform;
 
@@ -23,12 +22,15 @@ public class ThirdPersonController : MonoBehaviour
     void Update()
     {
         Vector3 cameraDirection = _cameraTransform.forward;
+        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         Quaternion rotation = Quaternion.LookRotation(new Vector3(cameraDirection.x, 0, cameraDirection.z));
-        Vector3 moveVector = transform.position + rotation *
-                             new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * 
-                             _speed * Time.deltaTime;
+        Vector3 moveVector = transform.position + rotation * input * _speed * Time.deltaTime; 
+        
         _rigidbody.MovePosition(moveVector);
-        _body.rotation = rotation;
+        if (moveVector != transform.position)
+        {
+            transform.rotation = rotation;
+        }
     }
 
     private void InitializeReferences()
