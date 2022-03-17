@@ -402,9 +402,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fead6fafc16e9f4ab7f0d20967cacae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
+  _speed: 15
   _rigidbody: {fileID: 489162366}
-  _body: {fileID: 240694280}
   _thirdPersonCamera: {fileID: 489162369}
 --- !u!1 &492502200
 GameObject:
