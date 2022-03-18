@@ -4,6 +4,7 @@ public class ThirdPersonCamera : MonoBehaviour
 {
     [SerializeField] [Tooltip("Will default to main camera if nothing is put in here")]
     private Camera _camera;
+    public Camera Camera => _camera;
 
     [SerializeField] [Tooltip("The pivot point the camera will rotate around and look at")]
     private Transform _pivot;
@@ -37,7 +38,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
     private float _distanceFromTarget;
     private float _verticalAngle;
-    private float _horizontalAngle = 0;
+    private float _horizontalAngle;
 
 
     private void Awake()
@@ -97,10 +98,5 @@ public class ThirdPersonCamera : MonoBehaviour
                 ? new GameObject("Camera").AddComponent<Camera>() 
                 : Camera.main;
         }
-    }
-
-    public Camera GetCamera()
-    {
-        return _camera;
     }
 }

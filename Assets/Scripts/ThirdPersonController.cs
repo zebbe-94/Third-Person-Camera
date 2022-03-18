@@ -11,7 +11,7 @@ public class ThirdPersonController : MonoBehaviour
     private void Awake()
     {
         InitializeReferences();
-        _cameraTransform = _thirdPersonCamera.GetCamera().transform;
+        _cameraTransform = _thirdPersonCamera.Camera.transform;
     }
 
     private void Reset()
